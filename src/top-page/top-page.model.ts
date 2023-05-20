@@ -1,3 +1,6 @@
+import { prop } from '@typegoose/typegoose';
+import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
+
 export enum TopLevelCategory {
   Courses,
   Services,
@@ -5,23 +8,57 @@ export enum TopLevelCategory {
   Products,
 }
 
-export class TopPageModel {
-  _id: string;
-  firstLevelCategory: TopLevelCategory;
-  secondCategory: string;
+export class HhData {
+  @prop()
+  count: number;
+
+  @prop()
+  juinorSalary: number;
+
+  @prop()
+  middleSalary: number;
+
+  @prop()
+  SeniorSalary: number;
+}
+
+export class TopPageAdvantage {
+  @prop()
   title: string;
+
+  @prop()
+  description: string;
+}
+
+export interface TopPageModel extends Base {}
+export class TopPageModel extends TimeStamps {
+  @prop({ enum: TopLevelCategory })
+  firstLevelCategory: TopLevelCategory;
+
+  @prop()
+  secondCategory: string;
+
+  @prop({ unique: true })
+  alias: string;
+
+  @prop()
+  title: string;
+
+  @prop()
   category: string;
-  hh?: {
-    count: number;
-    juinorSalary: number;
-    middleSalary: number;
-    SeniorSalary: number;
-  };
-  advatages: {
-    title: string;
-    description: string;
-  }[];
+
+  @prop({ type: () => HhData })
+  hh?: HhData;
+
+  @prop({ type: () => [TopPageAdvantage] })
+  advatages: TopPageAdvantage[];
+
+  @prop()
   seoText: string;
+
+  @prop()
   tagsTitle: string;
+
+  @prop({ type: () => [String] })
   tags: string[];
 }

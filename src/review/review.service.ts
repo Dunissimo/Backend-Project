@@ -5,6 +5,10 @@ import { DocumentType, ModelType } from '@typegoose/typegoose/lib/types';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { Types } from 'mongoose';
 
+class Leak {}
+
+const leaks = [];
+
 @Injectable()
 export class ReviewService {
   constructor(
@@ -23,6 +27,7 @@ export class ReviewService {
   async findByProductId(
     productId: string,
   ): Promise<DocumentType<ReviewModel>[]> {
+    leaks.push(new Leak());
     return this.reviewModel
       .find({
         productId: new Types.ObjectId(productId),
@@ -31,8 +36,10 @@ export class ReviewService {
   }
 
   async deleteByProductId(productId: string) {
-    return this.reviewModel.deleteMany({
-      productId: new Types.ObjectId(productId),
-    }).exec();
+    return this.reviewModel
+      .deleteMany({
+        productId: new Types.ObjectId(productId),
+      })
+      .exec();
   }
 }

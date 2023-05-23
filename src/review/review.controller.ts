@@ -15,6 +15,7 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewService } from './review.service';
 import { REVIEW_NOT_FOUND } from './reviews.constants';
 import { JWTAuthGuard } from '../auth/guards/jwt.guard';
+import { IDValidationPipe } from 'src/pipes/id-validation.pipe';
 
 @Controller('review')
 export class ReviewController {
@@ -29,7 +30,7 @@ export class ReviewController {
 
   @UseGuards(JWTAuthGuard)
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', IDValidationPipe) id: string) {
     const deletedDoc = await this.reviewService.delete(id);
 
     if (!deletedDoc) {
@@ -42,6 +43,8 @@ export class ReviewController {
     return this.reviewService.findByProductId(productId);
   }
 
-  // @Post('')
-  async deleteByProductId(@Param('productId') productId: string) {}
+  @Delete('byProduct/:productId')
+  async deleteByProductId(
+    @Param('productId', IDValidationPipe) productId: string,
+  ) {}
 }
